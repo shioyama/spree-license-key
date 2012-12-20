@@ -15,8 +15,20 @@ describe Spree::Order do
   end
 
   describe '.create_shipment!' do
-    it 'works' do
-      expect { order.create_shipment! }.to change{order.shipments.count}.from(0).to(3)
+    context "when shipment present" do
+      let(:shipment) { mock_model Spree::Shipment }
+      before { order.stub(:shipment) { shipment } }
+
+      it "updates shipment attributes" do
+        shipment.should_receive(:update_attributes!).once
+        order.create_shipment!
+      end
+    end
+
+    context "when shipment not present" do
+      it 'works' do
+        expect { order.create_shipment! }.to change{order.shipments.count}.from(0).to(3)
+      end
     end
   end
 end
