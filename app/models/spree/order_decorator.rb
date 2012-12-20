@@ -5,10 +5,12 @@ Spree::Order.class_eval do
     if shipment.present?
       shipment.update_attributes!(:shipping_method => shipping_method)
     else
-      inventory_units.electronically_delivered.each do |inventory_unit|
-        create_shipment_for_inventory_units! [inventory_unit], shipping_method
+      unless inventory_units.empty?
+        inventory_units.electronically_delivered.each do |inventory_unit|
+          create_shipment_for_inventory_units! [inventory_unit], shipping_method
+        end
+        create_shipment_for_inventory_units! inventory_units, shipping_method
       end
-      create_shipment_for_inventory_units! inventory_units.physically_delivered, shipping_method
     end
   end
 
