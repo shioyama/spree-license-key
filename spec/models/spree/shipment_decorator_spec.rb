@@ -20,4 +20,23 @@ describe Spree::Shipment do
       it { should be_false }
     end
   end
+
+  describe '.electronic_delivery!' do
+    let(:inventory_unit) { create :inventory_unit }
+    let(:license_key) { create :license_key }
+
+    before do
+      shipment.inventory_units = [inventory_unit]
+      shipment.order = build_stubbed(:order)
+      Spree::LicenseKey.should_receive(:next!) do
+        inventory_unit.stub(:license_key) { license_key }
+        license_key
+      end
+    end
+
+    it 'sends an email' do
+      Mail::Message.any_instance.should_receive(:deliver)
+      shipment.electronic_delivery!
+    end
+  end
 end

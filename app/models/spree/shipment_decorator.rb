@@ -7,6 +7,12 @@ Spree::Shipment.class_eval do
   end
 
   def electronic_delivery!
-    # TODO: Implement
+    inventory_units.each do |inventory_unit|
+      unless inventory_unit.license_key
+        license_key = Spree::LicenseKey.next!(inventory_unit)
+        inventory_unit.reload
+      end
+    end
+    Spree::EmailDeliveryMailer.send_license_keys(self).deliver
   end
 end

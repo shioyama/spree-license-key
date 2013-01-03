@@ -1,17 +1,17 @@
 module Spree
   class LicenseKey < ActiveRecord::Base
-    belongs_to :user, :class_name => Spree.user_class
+    belongs_to :inventory_unit, :class_name => "Spree::InventoryUnit"
     belongs_to :variant, :class_name => "Spree::Variant"
 
-    attr_accessible :license_key, :user_id, :variant_id
+    attr_accessible :license_key, :inventory_unit_id, :variant_id
 
-    def self.next!(variant, user)
+    def self.next!(inventory_unit)
       transaction do
-        license_key = self.where(:variant_id => variant.id, :user_id => nil).first
+        license_key = self.where(:variant_id => inventory_unit.variant.id, :inventory_unit_id => nil).first
         if license_key.nil?
-          raise LicenseKey::InsufficientLicenseKeys, variant.inspect
+          raise LicenseKey::InsufficientLicenseKeys, inventory_unit.variant.inspect
         end
-        license_key.user = user
+        license_key.inventory_unit = inventory_unit
         license_key.save!
         license_key
       end
