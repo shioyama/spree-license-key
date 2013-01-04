@@ -14,9 +14,13 @@ describe Spree::PaymentObserver do
         order.stub(:electronic_shipments) { [shipment] }
       end
 
-      it 'delivers the electronic item' do
-        shipment.should_receive(:ship!).once
-        observer.after_transition(payment, transition)
+      context "if the shipment is available to be shipped" do
+        before { shipment.stub(:can_ship?) { true } }
+
+        it 'delivers the electronic item' do
+          shipment.should_receive(:ship!).once
+          observer.after_transition(payment, transition)
+        end
       end
     end
   end
