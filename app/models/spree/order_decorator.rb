@@ -36,7 +36,11 @@ Spree::Order.class_eval do
     end
 
     if inventory_units.electronically_delivered.any?
-      electronic_shipments.first.inventory_units = inventory_units.electronically_delivered
+      es = electronic_shipments.first
+      es.inventory_units = inventory_units.electronically_delivered
+      if es.can_ship?
+        es.ship!
+      end
     end
 
     if inventory_units.physically_delivered.any?
