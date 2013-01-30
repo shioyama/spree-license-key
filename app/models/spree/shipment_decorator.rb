@@ -15,4 +15,18 @@ Spree::Shipment.class_eval do
     end
     Spree::EmailDeliveryMailer.send_license_keys(self).deliver
   end
+
+  # Modified from spree_core
+  # This function is modified to ensure that inventory_units are only shipped
+  # when they can be shipped
+  def after_ship
+    # Begin modified code
+    inventory_units.each do |iu|
+      iu.ship! if iu.can_ship?
+    end
+    # End modified code
+
+    send_shipped_email
+    touch :shipped_at
+  end
 end
