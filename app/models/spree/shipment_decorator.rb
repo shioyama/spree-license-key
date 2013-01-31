@@ -13,7 +13,6 @@ Spree::Shipment.class_eval do
         inventory_unit.reload
       end
     end
-    Spree::EmailDeliveryMailer.send_license_keys(self).deliver
   end
 
   # Modified from spree_core
@@ -28,5 +27,15 @@ Spree::Shipment.class_eval do
 
     send_shipped_email
     touch :shipped_at
+  end
+
+  # Modified from spree_core
+  # This will only send the e-mail if it is not electronic
+  def send_shipped_email
+    if electronic?
+      Spree::EmailDeliveryMailer.send_license_keys(self).deliver
+    else
+      Spree::ShipmentMailer.shipped_email(self).deliver
+    end
   end
 end
