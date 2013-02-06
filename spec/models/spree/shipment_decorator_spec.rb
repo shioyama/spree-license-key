@@ -69,14 +69,24 @@ describe Spree::Shipment do
   end
 
   describe '.send_shipped_email' do
-    before { shipment.stub(:electronic?) { electronic } }
+    before do
+      shipment.stub(:electronic?) { electronic }
+    end
 
     context "when shipment is electronic" do
       let(:electronic) { true }
 
-      it "sends an e-mail shipment mailer" do
-        Spree::EmailDeliveryMailer.any_instance.should_receive(:send_license_keys).once
-        shipment.send_shipped_email
+      context "when shipment has assigned license keys" do
+        let(:license_key) { build :license_key }
+        let(:inventory_unit) { build :inventory_unit, license_key: license_key }
+
+        before { shipment.inventory_units << inventory_unit }
+
+        it "sends an e-mail shipment mailer" do
+          Spree::EmailDeliveryMailer.any_instance.should_receive(:send_license_keys).once
+          shipment.send_shipped_email
+        end
+
       end
     end
 

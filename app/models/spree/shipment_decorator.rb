@@ -33,9 +33,14 @@ Spree::Shipment.class_eval do
   # This will only send the e-mail if it is not electronic
   def send_shipped_email
     if electronic?
-      Spree::EmailDeliveryMailer.send_license_keys(self).deliver
+      Spree::EmailDeliveryMailer.send_license_keys(self).deliver if can_email_deliver?
     else
       Spree::ShipmentMailer.shipped_email(self).deliver
     end
+  end
+
+  private
+  def can_email_deliver?
+    inventory_units.all? { |iu| !iu.license_key.nil? }
   end
 end
