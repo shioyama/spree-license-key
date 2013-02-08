@@ -24,18 +24,26 @@ describe Spree::Shipment do
   describe '.electronic_delivery!' do
     let(:inventory_unit) { create :inventory_unit }
     let(:license_key) { create :license_key }
+    let(:number_of_keys_in_package) { 1 }
 
     before do
       shipment.inventory_units = [inventory_unit]
       shipment.order = build_stubbed(:order)
+      inventory_unit.stub(:electronic_delivery_keys) { number_of_keys_in_package }
     end
 
-    it 'assigns the next license key to the inventory unit' do
-      Spree::LicenseKey.should_receive(:next!) do
-        inventory_unit.stub(:license_key) { license_key }
-        license_key
-      end
+    it 'allocates the next license key to the inventory unit' do
+      Spree::LicenseKey.should_receive(:next!).once
       shipment.electronic_delivery!
+    end
+
+    context 'multiple license keys' do
+      let(:number_of_keys_in_package) { 2 }
+
+      it 'allocates keys to match the number of keys in the package' do
+        Spree::LicenseKey.should_receive(:next!).exactly(number_of_keys_in_package).times
+        shipment.electronic_delivery!
+      end
     end
   end
 
@@ -78,7 +86,7 @@ describe Spree::Shipment do
 
       context "when shipment has assigned license keys" do
         let(:license_key) { build :license_key }
-        let(:inventory_unit) { build :inventory_unit, license_key: license_key }
+        let(:inventory_unit) { build :inventory_unit, license_keys: [license_key] }
 
         before { shipment.inventory_units << inventory_unit }
 

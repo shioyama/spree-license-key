@@ -8,8 +8,10 @@ Spree::Shipment.class_eval do
 
   def electronic_delivery!
     inventory_units.each do |inventory_unit|
-      unless inventory_unit.license_key
-        license_key = Spree::LicenseKey.next!(inventory_unit)
+      if inventory_unit.license_keys.empty?
+        inventory_unit.electronic_delivery_keys.times do
+          Spree::LicenseKey.next!(inventory_unit)
+        end
         inventory_unit.reload
       end
     end
@@ -41,6 +43,6 @@ Spree::Shipment.class_eval do
 
   private
   def can_email_deliver?
-    inventory_units.all? { |iu| !iu.license_key.nil? }
+    inventory_units.all? { |iu| !iu.license_keys.empty? }
   end
 end

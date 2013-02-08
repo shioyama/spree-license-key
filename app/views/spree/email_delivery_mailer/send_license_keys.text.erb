@@ -1,5 +1,7 @@
 Here are the license keys for the software you ordered.
 
 <% @inventory_units.each do |inventory_unit| %>
-  <%= inventory_unit.variant.product.name %>: <%= inventory_unit.license_key.license_key %>
+  <% inventory_unit.license_keys.each do |license_key| %>
+    <%= inventory_unit.variant.product.name %>: <%= license_key.license_key %>
+  <% end %>
 <% end %>
