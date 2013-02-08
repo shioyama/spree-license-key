@@ -13,6 +13,7 @@ describe 'spree/email_delivery_mailer/send_license_keys.text.erb' do
 
   subject { rendered }
 
+  it { should =~ /#{t('spree.email_delivery_mailer.send_license_keys.title')}/ }
   it { should =~ /VARIANT: ABC-123-DEF/ }
 
 end

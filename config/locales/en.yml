@@ -6,4 +6,4 @@ en:
     email_delivery_mailer:
       send_license_keys:
         subject: "License Key Delivery"
-
+        title: "Here are the license keys for the software you ordered."
