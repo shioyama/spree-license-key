@@ -10,7 +10,7 @@ Spree::Shipment.class_eval do
     inventory_units.each do |inventory_unit|
       if inventory_unit.license_keys.empty?
         inventory_unit.electronic_delivery_keys.times do
-          Spree::LicenseKey.next!(inventory_unit)
+          Spree::LicenseKey.assign_license_keys!(inventory_unit)
         end
         inventory_unit.reload
       end

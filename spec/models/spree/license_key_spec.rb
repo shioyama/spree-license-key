@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe Spree::LicenseKey do
-  describe '#next' do
+  describe '#assign_license_keys!' do
     let(:inventory_unit) { build_stubbed :inventory_unit }
     let!(:license_key) { create :license_key, :inventory_unit => license_inventory_unit }
     let(:license_inventory_unit) { nil }
 
     shared_examples_for "insufficient_license_keys" do
       it "throws an insufficient license keys exception" do
-        expect { Spree::LicenseKey.next!(inventory_unit) }.to raise_error(Spree::LicenseKey::InsufficientLicenseKeys)
+        expect { Spree::LicenseKey.assign_license_keys!(inventory_unit) }.to raise_error(Spree::LicenseKey::InsufficientLicenseKeys)
       end
     end
 
@@ -18,7 +18,7 @@ describe Spree::LicenseKey do
 
       context "when the key is not claimed" do
         it "gets a license key" do
-          key = Spree::LicenseKey.next!(inventory_unit)
+          key = Spree::LicenseKey.assign_license_keys!(inventory_unit)
           key.should == license_key
         end
       end

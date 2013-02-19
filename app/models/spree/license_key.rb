@@ -6,7 +6,7 @@ module Spree
 
     attr_accessible :license_key, :inventory_unit_id, :variant_id
 
-    def self.next!(inventory_unit)
+    def self.assign_license_keys!(inventory_unit)
       transaction do
         license_key = self.where(:variant_id => inventory_unit.variant.id, :inventory_unit_id => nil).first
         if license_key.nil?

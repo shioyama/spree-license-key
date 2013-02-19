@@ -33,7 +33,7 @@ describe Spree::Shipment do
     end
 
     it 'allocates the next license key to the inventory unit' do
-      Spree::LicenseKey.should_receive(:next!).once
+      Spree::LicenseKey.should_receive(:assign_license_keys!).once
       shipment.electronic_delivery!
     end
 
@@ -41,7 +41,7 @@ describe Spree::Shipment do
       let(:number_of_keys_in_package) { 2 }
 
       it 'allocates keys to match the number of keys in the package' do
-        Spree::LicenseKey.should_receive(:next!).exactly(number_of_keys_in_package).times
+        Spree::LicenseKey.should_receive(:assign_license_keys!).exactly(number_of_keys_in_package).times
         shipment.electronic_delivery!
       end
     end
