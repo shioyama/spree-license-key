@@ -8,16 +8,28 @@ module Spree
 
     def self.assign_license_keys!(inventory_unit)
       transaction do
-        license_key = self.where(:variant_id => inventory_unit.variant.id, :inventory_unit_id => nil).first
-        if license_key.nil?
-          raise LicenseKey::InsufficientLicenseKeys, inventory_unit.variant.inspect
+        if inventory_unit.variant.license_key_types.empty?
+          [self.get_available_key(inventory_unit)]
+        else
+          inventory_unit.variant.license_key_types.map do |key_type|
+            self.get_available_key(inventory_unit, key_type)
+          end
         end
-        license_key.inventory_unit = inventory_unit
-        license_key.save!
-        license_key
       end
     end
 
     class InsufficientLicenseKeys < ::StandardError; end
+
+    private
+
+    def self.get_available_key(inventory_unit, license_key_type = nil)
+      license_key = self.where(:variant_id => inventory_unit.variant.id, :inventory_unit_id => nil, :license_key_type_id => license_key_type.try(:id)).first
+      if license_key.nil?
+        raise LicenseKey::InsufficientLicenseKeys, "Variant: #{inventory_unit.variant.to_param}, License Key Type: #{license_key_type.try(:id)}"
+      end
+      license_key.inventory_unit = inventory_unit
+      license_key.save!
+      license_key
+    end
   end
 end

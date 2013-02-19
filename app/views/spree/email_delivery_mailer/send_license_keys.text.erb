@@ -2,6 +2,6 @@
 
 <% @inventory_units.each do |inventory_unit| %>
   <% inventory_unit.license_keys.each do |license_key| %>
-    <%= inventory_unit.variant.name %>: <%= license_key.license_key %>
+    <%= inventory_unit.variant.name %><%= " (#{license_key.license_key_type.slug})" if license_key.license_key_type %>: <%= license_key.license_key %>
   <% end %>
 <% end %>
