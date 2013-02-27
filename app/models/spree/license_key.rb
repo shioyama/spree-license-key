@@ -6,6 +6,8 @@ module Spree
 
     attr_accessible :license_key, :inventory_unit_id, :variant_id
 
+    scope :available, where(inventory_unit_id: nil)
+
     def self.assign_license_keys!(inventory_unit)
       transaction do
         if inventory_unit.variant.license_key_types.empty?
