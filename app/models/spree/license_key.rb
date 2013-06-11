@@ -7,6 +7,7 @@ module Spree
     attr_accessible :license_key, :inventory_unit_id, :variant_id
 
     scope :available, where(inventory_unit_id: nil)
+    scope :used, where('inventory_unit_id IS NOT NULL')
 
     def self.assign_license_keys!(inventory_unit)
       transaction do
