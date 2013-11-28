@@ -26,13 +26,11 @@ module Spree
     private
 
     def self.get_available_key(inventory_unit, license_key_type = nil)
-      license_key = self.where(:variant_id => inventory_unit.variant.id, :inventory_unit_id => nil, :license_key_type_id => license_key_type.try(:id)).first
-      if license_key.nil?
+      key_count = self.where(:variant_id => inventory_unit.variant.id, :inventory_unit_id => nil, :license_key_type_id => license_key_type.try(:id)).order('id asc').limit(1).update_all(inventory_unit_id: inventory_unit.id)
+      if key_count == 0
         raise LicenseKey::InsufficientLicenseKeys, "Variant: #{inventory_unit.variant.to_param}, License Key Type: #{license_key_type.try(:id)}"
       end
-      license_key.inventory_unit = inventory_unit
-      license_key.save!
-      license_key
+      self.where(inventory_unit_id: inventory_unit.id).order('id desc').first
     end
   end
 end
