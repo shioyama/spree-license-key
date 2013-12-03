@@ -91,7 +91,7 @@ describe Spree::Shipment do
         before { shipment.inventory_units << inventory_unit }
 
         it "sends an e-mail shipment mailer" do
-          Spree::EmailDeliveryMailer.any_instance.should_receive(:send_license_keys).once
+          Spree::EmailDeliveryMailer.any_instance.should_receive(:electronic_delivery_email).once
           shipment.send_shipped_email
         end
 

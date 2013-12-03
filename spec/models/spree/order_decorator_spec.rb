@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Spree::Order do
   let(:order) { create :order }
-  let(:electronic_variant) { create :variant, :electronic_delivery_keys => 1 }
+  let(:electronic_variant) { create :variant, :electronic_delivery_keys => 1, :electronic_delivery => true }
   let(:physical_variant) { create :variant }
   let!(:electronic_shipping_method) { create :shipping_method, :name => Spree::ShippingMethod::electronic_delivery_name }
   let!(:physical_shipping_method) { create :shipping_method }

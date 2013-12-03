@@ -5,8 +5,8 @@ describe Spree::EmailDeliveryMailer do
   let(:inventory_unit) { build_stubbed :inventory_unit, :license_keys => [license_key] }
   let(:shipment) { build_stubbed :shipment, :inventory_units => [inventory_unit] }
 
-  describe '.send_license_keys' do
-    subject { Spree::EmailDeliveryMailer.send_license_keys(shipment) }
+  describe '#electronic_delivery_email' do
+    subject { Spree::EmailDeliveryMailer.electronic_delivery_email(shipment) }
 
     it 'renders the subject' do
       subject.subject.should == "License Key Delivery"

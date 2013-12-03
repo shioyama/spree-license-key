@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'spree/email_delivery_mailer/send_license_keys.text.erb' do
+describe 'spree/email_delivery_mailer/electronic_delivery_email.text.erb' do
   let(:license_key) { stub_model Spree::LicenseKey, license_key: 'ABC-123-DEF', license_key_type: license_key_type }
   let(:variant) { stub_model Spree::Variant, name: "VARIANT" }
   let(:license_key_type) { nil }
@@ -14,7 +14,7 @@ describe 'spree/email_delivery_mailer/send_license_keys.text.erb' do
 
   subject { rendered }
 
-  it { should =~ /#{t('spree.email_delivery_mailer.send_license_keys.title')}/ }
+  it { should =~ /#{t('spree.email_delivery_mailer.electronic_delivery_email.title')}/ }
   it { should =~ /VARIANT: ABC-123-DEF/ }
 
   context "when license key has a variant type" do
