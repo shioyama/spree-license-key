@@ -7,3 +7,5 @@ en:
       electronic_delivery_email:
         subject: "License Key Delivery"
         title: "Here are the license keys for the software you ordered."
+    variant:
+      electronic_delivery_setting_error: "must be set to TRUE if electronic_delivery_keys is greater than 0."
