@@ -22,15 +22,6 @@ describe Spree::Order do
         order.create_shipment!
         order.electronic_shipments.first.inventory_units.should == [inventory_unit]
       end
-
-      context "when the shipment can be shipped" do
-        before { Spree::Shipment.any_instance.stub(:can_ship?) { true } }
-
-        it "ships the shipment" do
-          Spree::Shipment.any_instance.should_receive(:ship!).once
-          order.create_shipment!
-        end
-      end
     end
 
     context "when there are not electronic delivery items" do

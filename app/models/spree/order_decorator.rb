@@ -17,7 +17,7 @@ Spree::Order.class_eval do
 
     if line_items.physically_delivered.any?
       if physical_shipments.empty?
-        create_shipment_for_shipping_method!(shipping_method)
+        create_shipment_for_shipping_method! shipping_method
       else
         physical_shipments.each do |physical_shipment|
           if physical_shipment.shipping_method != shipping_method
@@ -36,11 +36,7 @@ Spree::Order.class_eval do
     end
 
     if inventory_units.electronically_delivered.any?
-      es = electronic_shipments.first
-      es.inventory_units = inventory_units.electronically_delivered
-      if es.can_ship?
-        es.ship!
-      end
+      electronic_shipments.first.inventory_units = inventory_units.electronically_delivered
     end
 
     if inventory_units.physically_delivered.any?
@@ -55,6 +51,8 @@ Spree::Order.class_eval do
           :order => self,
           :shipping_method => method,
           :address => self.ship_address
-        }, :without_protection => true)
+        },
+        :without_protection => true
+      )
     end
 end

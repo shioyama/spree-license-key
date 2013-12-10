@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Spree::ShipmentObserver do
-  describe '.after_transition' do
+  describe '.before_transition' do
     let(:observer) { Spree::ShipmentObserver.instance }
     let(:shipment) { build_stubbed :shipment }
     let(:transition) { double(StateMachine::Transition) }
@@ -13,7 +13,7 @@ describe Spree::ShipmentObserver do
 
         it 'delivers the electronic item' do
           shipment.should_receive(:electronic_delivery!).once
-          observer.after_transition(shipment, transition)
+          observer.before_transition(shipment, transition)
         end
       end
     end
