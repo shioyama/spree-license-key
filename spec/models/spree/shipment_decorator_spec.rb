@@ -37,6 +37,15 @@ describe Spree::Shipment do
       shipment.electronic_delivery!
     end
 
+    context 'when electronic_delivery_keys is null' do
+      let(:number_of_keys_in_package) { nil }
+
+      it "does not assign any license keys" do
+        Spree::LicenseKey.should_not_receive(:assign_license_keys!)
+        shipment.electronic_delivery!
+      end
+    end
+
     context 'multiple license keys' do
       let(:number_of_keys_in_package) { 2 }
 
