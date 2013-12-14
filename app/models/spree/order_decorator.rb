@@ -1,4 +1,6 @@
 Spree::Order.class_eval do
+  include ActiveSupport::Callbacks
+
   def electronic_shipments
     shipments.electronic
   end
@@ -41,6 +43,12 @@ Spree::Order.class_eval do
 
     if inventory_units.physically_delivered.any?
       physical_shipments.first.inventory_units = inventory_units.physically_delivered
+    end
+  end
+
+  def after_finalize!
+    electronic_shipments.each do |shipment|
+      shipment.ship! if shipment.can_ship?
     end
   end
 
