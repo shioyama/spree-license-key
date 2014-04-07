@@ -4,5 +4,9 @@ Spree::InventoryUnit.class_eval do
 
   has_many :license_keys, class_name: "Spree::LicenseKey", dependent: :nullify
 
-  delegate :electronic_delivery_keys, :to => :variant
+  delegate :electronic_delivery_keys, :license_key_populator, :to => :variant
+
+  def populate_license_keys
+    license_key_populator.populate(self, electronic_delivery_keys)
+  end
 end
