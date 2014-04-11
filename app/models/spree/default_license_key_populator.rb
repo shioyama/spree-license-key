@@ -1,7 +1,7 @@
 module Spree
   class DefaultLicenseKeyPopulator < LicenseKeyPopulator
 
-    def self.get_available_keys(inventory_unit, license_key_type, quantity)
+    def self.get_available_keys(inventory_unit, quantity, license_key_type=nil)
       return false unless count_available(inventory_unit, license_key_type) >= quantity
       LicenseKey.where(
         :variant_id => inventory_unit.variant.id,

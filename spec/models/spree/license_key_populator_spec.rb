@@ -8,7 +8,7 @@ describe Spree::LicenseKeyPopulator do
 
     describe ".get_available_keys" do
       it "raises NotImplementedError" do
-        expect { Spree::LicenseKeyPopulator.get_available_keys(inventory_unit, nil, quantity) }.to raise_error(NotImplementedError)
+        expect { Spree::LicenseKeyPopulator.get_available_keys(inventory_unit, quantity) }.to raise_error(NotImplementedError)
       end
     end
 
@@ -17,7 +17,7 @@ describe Spree::LicenseKeyPopulator do
       let(:populator_class) do
         Class.new(Spree::LicenseKeyPopulator) do
           # Minimal populator function, returns false if there are not enough keys.
-          def self.get_available_keys(inventory_unit, license_key_type, quantity)
+          def self.get_available_keys(inventory_unit, quantity, license_key_type=nil)
             quantity <= Spree::LicenseKey.count ?  Spree::LicenseKey.scoped : false
           end
         end
@@ -40,7 +40,7 @@ describe Spree::LicenseKeyPopulator do
         it_behaves_like "license key populator"
 
         it "calls get_available_keys once with nil license_key_type" do
-          populator_class.should_receive(:get_available_keys).once.with(inventory_unit, nil, quantity).and_call_original
+          populator_class.should_receive(:get_available_keys).once.with(inventory_unit, quantity, nil).and_call_original
           populator_class.populate(inventory_unit, quantity)
         end
       end
@@ -58,8 +58,8 @@ describe Spree::LicenseKeyPopulator do
         end
 
         it "calls get_available_keys once for each license key type" do
-          populator_class.should_receive(:get_available_keys).once.with(inventory_unit, license_key_type_1, quantity).and_call_original
-          populator_class.should_receive(:get_available_keys).once.with(inventory_unit, license_key_type_2, quantity).and_call_original
+          populator_class.should_receive(:get_available_keys).once.with(inventory_unit, quantity, license_key_type_1).and_call_original
+          populator_class.should_receive(:get_available_keys).once.with(inventory_unit, quantity, license_key_type_2).and_call_original
           populator_class.populate(inventory_unit, quantity)
         end
       end

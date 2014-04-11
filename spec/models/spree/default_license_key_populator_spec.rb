@@ -9,7 +9,7 @@ describe Spree::DefaultLicenseKeyPopulator do
     shared_examples_for "license key populator" do
       context "no keys available" do
         it "returns false" do
-          Spree::DefaultLicenseKeyPopulator.get_available_keys(inventory_unit, license_key_type, quantity).should == false
+          Spree::DefaultLicenseKeyPopulator.get_available_keys(inventory_unit, quantity, license_key_type).should == false
         end
       end
 
@@ -18,19 +18,19 @@ describe Spree::DefaultLicenseKeyPopulator do
         let!(:license_keys) { quantity.times.map { create(:license_key, variant: variant, license_key_type: license_key_type) } }
 
         it "returns license keys with this type" do
-          Spree::DefaultLicenseKeyPopulator.get_available_keys(inventory_unit, license_key_type, quantity).should == license_keys
+          Spree::DefaultLicenseKeyPopulator.get_available_keys(inventory_unit, quantity, license_key_type).should == license_keys
         end
 
         it "only returns license keys with this type" do
           other_license_key_type = create :license_key_type
           other_license_keys = quantity.times.map { create :license_key, variant: variant, license_key_type: other_license_key_type }
-          Spree::DefaultLicenseKeyPopulator.get_available_keys(inventory_unit, other_license_key_type, quantity).should == other_license_keys
+          Spree::DefaultLicenseKeyPopulator.get_available_keys(inventory_unit, quantity, other_license_key_type).should == other_license_keys
         end
 
         it "only returns license keys without inventory ids" do
           license_keys.each { |key| key.update_attributes!(inventory_unit_id: inventory_unit.id) }
           other_license_keys = quantity.times.map { create :license_key, variant: variant, license_key_type: license_key_type }
-          Spree::DefaultLicenseKeyPopulator.get_available_keys(inventory_unit, license_key_type, quantity).should == other_license_keys
+          Spree::DefaultLicenseKeyPopulator.get_available_keys(inventory_unit, quantity, license_key_type).should == other_license_keys
         end
       end
     end

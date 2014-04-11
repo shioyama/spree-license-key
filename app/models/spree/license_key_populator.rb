@@ -5,7 +5,7 @@ module Spree
         variant = inventory_unit.variant
         license_key_types = variant.license_key_types.empty? ? [nil] : variant.license_key_types
         license_key_types.each do |license_key_type|
-          if keys = get_available_keys(inventory_unit, license_key_type, quantity)
+          if keys = get_available_keys(inventory_unit, quantity, license_key_type)
             assign_keys!(keys, inventory_unit)
           else
             raise InsufficientLicenseKeys, "Variant: #{inventory_unit.variant.to_param}, License Key Type: #{license_key_type.try(:id)}"
@@ -16,7 +16,7 @@ module Spree
     end
 
     # Gets keys from source. Should return a relation.
-    def self.get_available_keys(inventory_unit, license_key_type, quantity)
+    def self.get_available_keys(inventory_unit, quantity, license_key_type=nil)
       raise NotImplementedError, "Spree::LicenseKeyPopulator must implement a get_available_keys method."
     end
 
