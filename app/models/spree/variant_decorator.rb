@@ -7,7 +7,7 @@ Spree::Variant.class_eval do
   validate :electronic_delivery_set
 
   def license_key_populator
-    Spree::DefaultLicenseKeyPopulator
+    populator_type.try(:constantize) || Spree::DefaultLicenseKeyPopulator
   end
 
   private
