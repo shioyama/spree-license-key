@@ -25,7 +25,7 @@ module Spree
     private
 
     def self.assign_keys!(keys, inventory_unit)
-      keys.update_all(inventory_unit_id: inventory_unit.id)
+      keys.each { |key| key.update_attributes!(inventory_unit_id: inventory_unit.id) }
     end
   end
 end
