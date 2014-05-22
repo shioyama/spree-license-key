@@ -21,7 +21,11 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_girl', '~> 2.6.4'
   s.add_development_dependency 'ffaker'
   s.add_development_dependency 'rspec-rails',  '~> 2.9'
-  s.add_development_dependency 'sqlite3'
+  if ENV['DB'] == 'mysql'
+    s.add_development_dependency 'mysql2'
+  else
+    s.add_development_dependency 'sqlite3'
+  end
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'simplecov-rcov'
   s.add_development_dependency 'guard-rspec'
