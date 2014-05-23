@@ -1,4 +1,4 @@
-SpreeLicenseKey
+SpreeLicenseKey [![Build Status](https://travis-ci.org/degica/spree-license-key.png?branch=master)](https://travis-ci.org/degica/spree-license-key)
 ===============
 
 Introduction goes here.
