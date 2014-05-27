@@ -3,9 +3,8 @@ module Spree
 
     def self.get_available_keys(inventory_unit, quantity, license_key_type=nil)
       return false unless count_available(inventory_unit, license_key_type) >= quantity
-      LicenseKey.where(
+      LicenseKey.available.where(
         :variant_id => inventory_unit.variant.id,
-        :inventory_unit_id => nil,
         :license_key_type_id => license_key_type.try(:id)
       ).order('id asc').limit(quantity)
     end

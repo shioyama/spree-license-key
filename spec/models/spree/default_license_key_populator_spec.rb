@@ -32,6 +32,12 @@ describe Spree::DefaultLicenseKeyPopulator do
           other_license_keys = quantity.times.map { create :license_key, variant: variant, license_key_type: license_key_type }
           Spree::DefaultLicenseKeyPopulator.get_available_keys(inventory_unit, quantity, license_key_type).should == other_license_keys
         end
+
+        it "only returns license keys that are not void" do
+          license_keys.each { |key| key.update_attributes!(void: true) }
+          other_license_keys = quantity.times.map { create :license_key, variant: variant, license_key_type: license_key_type }
+          Spree::DefaultLicenseKeyPopulator.get_available_keys(inventory_unit, quantity, license_key_type).should == other_license_keys
+        end
       end
     end
 
