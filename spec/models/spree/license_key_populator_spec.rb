@@ -30,10 +30,10 @@ describe Spree::LicenseKeyPopulator do
           keys.each { |key| key.inventory_unit_id.should == inventory_unit.id }
         end
 
-        it "updates timestamps on license keys when they are assigned" do
+        it "sets activated_on on license keys when they are assigned" do
           t = Date.today + 5
           keys = Timecop.freeze(t) { populator_class.populate(inventory_unit, quantity) }
-          keys.each { |key| key.updated_at.should == t }
+          keys.each { |key| key.activated_on.should == t }
         end
 
         describe 'success/failure callbacks' do

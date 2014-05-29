@@ -32,7 +32,8 @@ module Spree
     private
 
     def self.assign_keys!(keys, inventory_unit)
-      keys.each { |key| key.update_attributes!(inventory_unit_id: inventory_unit.id) }
+      timestamp = DateTime.now
+      keys.each { |key| key.update_attributes!(inventory_unit_id: inventory_unit.id, activated_on: timestamp) }
     end
   end
 end
