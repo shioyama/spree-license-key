@@ -6,7 +6,7 @@ module Spree
       LicenseKey.available.where(
         :variant_id => inventory_unit.variant.id,
         :license_key_type_id => license_key_type.try(:id)
-      ).order('id asc').limit(quantity)
+      ).order('id asc').limit(quantity).lock
     end
 
     private
