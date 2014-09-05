@@ -36,14 +36,29 @@ describe Spree::LicenseKeyPopulator do
           keys.each { |key| key.updated_at.should == t }
         end
 
-        it "calls after_success_get_available_keys when override the method" do
-          populator_class.should_receive(:after_success_get_available_keys).any_number_of_times.and_return(true)
-          populator_class.populate(inventory_unit, quantity)
-        end
+        describe 'success/failure callbacks' do
+          # if no license key types, check that callbacks are called with nil
+          let(:license_key_types) do
+            if !inventory_unit.variant.license_key_types.empty?
+              inventory_unit.variant.license_key_types
+            else
+              [ nil ]
+            end
+          end
 
-        it "calls after_failure_get_available_keys when override the method" do
-          populator_class.should_receive(:after_failure_get_available_keys).any_number_of_times.and_return(true)
-          populator_class.populate(inventory_unit, quantity + 1)
+          it "calls after_success_get_available_keys" do
+            license_key_types.each do |license_key_type|
+              populator_class.should_receive(:after_success_get_available_keys).once.with(inventory_unit, license_key_type)
+            end
+            populator_class.populate(inventory_unit, quantity)
+          end
+
+          it "calls after_failure_get_available_keys" do
+            license_key_types.each do |license_key_type|
+              populator_class.should_receive(:after_failure_get_available_keys).once.with(inventory_unit, license_key_type)
+            end
+            populator_class.populate(inventory_unit, quantity + 1)
+          end
         end
 
         it "raises error for insufficient keys if none are available" do
