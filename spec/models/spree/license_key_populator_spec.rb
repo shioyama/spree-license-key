@@ -61,9 +61,6 @@ describe Spree::LicenseKeyPopulator do
           end
         end
 
-        it "raises error for insufficient keys if none are available" do
-          expect { populator_class.populate(inventory_unit, quantity + 1) }.to raise_error(Spree::LicenseKeyPopulator::InsufficientLicenseKeys)
-        end
       end
 
       context "variant has no license key types" do

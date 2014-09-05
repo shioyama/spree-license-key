@@ -9,6 +9,11 @@ module Spree
       ).order('id asc').limit(quantity).lock
     end
 
+    def self.failure(inventory_unit, license_key_type)
+      raise(InsufficientLicenseKeys,
+            "Variant: #{inventory_unit.variant.to_param}, License Key Type: #{license_key_type.try(:id)}")
+    end
+
     private
 
     def self.count_available(inventory_unit, license_key_type)
