@@ -46,16 +46,16 @@ describe Spree::LicenseKeyPopulator do
             end
           end
 
-          it "calls after_success_get_available_keys" do
+          it "calls success" do
             license_key_types.each do |license_key_type|
-              populator_class.should_receive(:after_success_get_available_keys).once.with(inventory_unit, license_key_type)
+              populator_class.should_receive(:success).once.with(inventory_unit, license_key_type)
             end
             populator_class.populate(inventory_unit, quantity)
           end
 
-          it "calls after_failure_get_available_keys" do
+          it "calls failure" do
             license_key_types.each do |license_key_type|
-              populator_class.should_receive(:after_failure_get_available_keys).once.with(inventory_unit, license_key_type)
+              populator_class.should_receive(:failure).once.with(inventory_unit, license_key_type)
             end
             populator_class.populate(inventory_unit, quantity + 1)
           end
