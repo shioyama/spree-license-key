@@ -18,7 +18,7 @@ describe Spree::OrderObserver do
         before { shipment.stub(:can_ship?) { true } }
 
         it 'delivers the electronic item' do
-          shipment.should_receive(:ship!).once
+          shipment.should_receive(:asynchronous_ship!).once
           observer.after_transition(order, transition)
         end
       end
