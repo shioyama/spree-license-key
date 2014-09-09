@@ -15,6 +15,12 @@ Spree::Shipment.class_eval do
     end
   end
 
+  # Delayed jobs for asynchronous shipments should silently die if they cannot be shipped,
+  # e.g. in case they have been manually shipped since the last attempt.
+  def asynchronous_ship!
+    ship! if can_ship?
+  end
+
   # Modified from spree_core
   # This function is modified to ensure that inventory_units are only shipped
   # when they can be shipped
