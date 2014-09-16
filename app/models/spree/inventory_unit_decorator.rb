@@ -9,4 +9,8 @@ Spree::InventoryUnit.class_eval do
   def populate_license_keys
     license_key_populator.populate(self, electronic_delivery_keys)
   end
+
+  def has_electronic_delivery_keys?
+    electronic_delivery_keys && electronic_delivery_keys > 0
+  end
 end
