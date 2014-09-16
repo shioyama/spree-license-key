@@ -37,13 +37,21 @@ describe Spree::Shipment do
       shipment.electronic_delivery!
     end
 
-    context 'when electronic_delivery_keys is null' do
-      let(:number_of_keys_in_package) { nil }
-
+    shared_examples_for "inventory unit with no electronic delivery keys" do
       it "does not assign any license keys" do
         Spree::DefaultLicenseKeyPopulator.should_not_receive(:populate)
         shipment.electronic_delivery!
       end
+    end
+
+    context 'when electronic_delivery_keys is nil' do
+      let(:number_of_keys_in_package) { nil }
+      it_behaves_like "inventory unit with no electronic delivery keys"
+    end
+
+    context 'when electronic_delivery_keys is zero' do
+      let(:number_of_keys_in_package) { 0 }
+      it_behaves_like "inventory unit with no electronic delivery keys"
     end
 
     context 'multiple license keys' do

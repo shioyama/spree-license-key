@@ -8,7 +8,7 @@ Spree::Shipment.class_eval do
 
   def electronic_delivery!
     inventory_units.each do |inventory_unit|
-      if inventory_unit.license_keys.empty? && inventory_unit.electronic_delivery_keys
+      if inventory_unit.license_keys.empty? && inventory_unit.has_electronic_delivery_keys?
         inventory_unit.populate_license_keys
         inventory_unit.reload
       end
