@@ -13,4 +13,31 @@ Spree::InventoryUnit.class_eval do
   def has_electronic_delivery_keys?
     electronic_delivery_keys && electronic_delivery_keys > 0
   end
+
+  class << self
+    def increase_with_electronic_shipments(order, variant, quantity)
+      if variant.electronic_delivery?
+        # Simplified from spree-core: no tracking levels and always
+        # create inventory units for electronic variants
+        create_electronic_units(order, variant, quantity)
+      else
+        increase_without_electronic_shipments(order, variant, quantity)
+      end
+    end
+    alias_method_chain :increase, :electronic_shipments
+
+    private
+
+    # paraphrased from spree-core (create_units), with changes to assign
+    # inventory units to electronic shipment
+    def create_electronic_units(order, variant, quantity)
+      shipment = order.shipments.electronic.first
+
+      quantity.times do
+        order.inventory_units.create(
+          { variant: variant, state: "sold", shipment: shipment },
+          without_protection: true)
+      end
+    end
+  end
 end
