@@ -5,21 +5,29 @@ describe Spree::InventoryUnit do
   describe ".increase" do
     context "variant is electronic" do
       let(:order) { create :order }
+      let(:physical_variant) { create :variant }
       let(:electronic_variant) { create :electronic_variant }
       let(:line_item) { create :line_item, variant: electronic_variant, order: order }
       let!(:electronic_shipping_method) { create :shipping_method, name: Spree::ShippingMethod::electronic_delivery_name }
+      let!(:physical_shipment) { create :shipment, order: order }
       let!(:electronic_shipment) { create :shipment, order: order, shipping_method: electronic_shipping_method }
       before { order.reload }
 
       context "electronic shipment exists on order" do
-        it "creates an inventory unit" do
-          Spree::InventoryUnit.increase(order, electronic_variant, 5)
-          expect(order.inventory_units.first).to be_a(Spree::InventoryUnit)
+        it "creates new inventory units" do
+          expect {
+            Spree::InventoryUnit.increase(order, electronic_variant, 2)
+          }.to change { order.inventory_units.count }.from(0).to(2)
         end
 
-        it "assigns inventory unit to electronic shipment" do
-          Spree::InventoryUnit.increase(order, electronic_variant, 5)
+        it "assigns electronic inventory units to electronic shipment" do
+          Spree::InventoryUnit.increase(order, electronic_variant, 1)
           expect(order.inventory_units.first.shipment).to eq(electronic_shipment)
+        end
+
+        it "assigns physical inventory units to physical shipment" do
+          Spree::InventoryUnit.increase(order, physical_variant, 1)
+          expect(order.inventory_units.first.shipment).to eq(physical_shipment)
         end
       end
     end
@@ -28,7 +36,8 @@ describe Spree::InventoryUnit do
     context "variant is physical" do
       let(:variant) { mock_model(Spree::Variant, on_hand: 95, on_demand: false, electronic_delivery?: false) }
       let(:line_item) { mock_model(Spree::LineItem, variant: variant, quantity: 5) }
-      let(:order) { mock_model(Spree::Order, line_items: [line_item], inventory_units: [], shipments: mock('shipments'), completed?: true) }
+      let(:order) { mock_model(Spree::Order, line_items: [line_item], inventory_units: [], shipments: mock("shipments"), completed?: true) }
+      after(:all) { Spree::Config.clear_preferences }
       context "when :track_inventory_levels is true" do
         before do
           Spree::Config.set track_inventory_levels: true
