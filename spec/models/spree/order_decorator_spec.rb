@@ -6,6 +6,9 @@ describe Spree::Order do
   let(:physical_variant) { create :variant }
   let!(:electronic_shipping_method) { create :shipping_method, :name => Spree::ShippingMethod::electronic_delivery_name }
   let!(:physical_shipping_method) { create :shipping_method }
+  before do
+    order.shipping_method = physical_shipping_method
+  end
 
   describe '.create_shipment!' do
     context "when there are electronic delivery items" do
@@ -24,9 +27,12 @@ describe Spree::Order do
       end
     end
 
-    context "when there are not electronic delivery items" do
+    context "when there are no electronic delivery items" do
       context "when there is an electronic shipment" do
         let!(:shipment) { create :shipment, :order => order, :shipping_method => electronic_shipping_method }
+        before do
+          order.shipping_method = electronic_shipping_method
+        end
 
         it "deletes the electronic shipment" do
           expect { order.create_shipment! }.to change{order.electronic_shipments.count}.from(1).to(0)
@@ -37,8 +43,6 @@ describe Spree::Order do
     context "when there are physical delivery items" do
       let!(:line_item) { create :line_item, :variant => physical_variant, :order => order }
       let!(:inventory_unit) { create :inventory_unit, :variant => physical_variant, :order => order }
-
-      before { order.shipping_method = physical_shipping_method }
 
       context "when there is not a physical shipment" do
         it 'adds a physical shipment' do
