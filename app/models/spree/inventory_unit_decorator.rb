@@ -29,9 +29,9 @@ Spree::InventoryUnit.class_eval do
     private
 
     # paraphrased from spree-core (create_units), with changes to assign
-    # inventory units to electronic shipment
+    # inventory units to electronic shipment or create new electronic shipment
     def create_electronic_units(order, variant, quantity)
-      shipment = order.shipments.electronic.first
+      shipment = order.shipments.electronic.first_or_create!
 
       quantity.times do
         order.inventory_units.create(

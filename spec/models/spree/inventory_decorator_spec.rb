@@ -10,10 +10,10 @@ describe Spree::InventoryUnit do
       let(:line_item) { create :line_item, variant: electronic_variant, order: order }
       let!(:electronic_shipping_method) { create :shipping_method, name: Spree::ShippingMethod::electronic_delivery_name }
       let!(:physical_shipment) { create :shipment, order: order }
-      let!(:electronic_shipment) { create :shipment, order: order, shipping_method: electronic_shipping_method }
       before { order.reload }
 
       context "electronic shipment exists on order" do
+        let!(:electronic_shipment) { create :shipment, order: order, shipping_method: electronic_shipping_method }
         it "creates new inventory units" do
           expect {
             Spree::InventoryUnit.increase(order, electronic_variant, 2)
@@ -28,6 +28,20 @@ describe Spree::InventoryUnit do
         it "assigns physical inventory units to physical shipment" do
           Spree::InventoryUnit.increase(order, physical_variant, 1)
           expect(order.inventory_units.first.shipment).to eq(physical_shipment)
+        end
+      end
+
+      context "no electronic shipment exists on order" do
+        it "creates new electronic shipment" do
+          expect {
+            Spree::InventoryUnit.increase(order, electronic_variant, 2)
+          }.to change { order.shipments.count }.from(1).to(2)
+        end
+
+        it "assigns inventory unit to new electronic shipment" do
+          Spree::InventoryUnit.increase(order, electronic_variant, 2)
+          shipment = order.inventory_units.first.shipment
+          expect(shipment).to be_electronic
         end
       end
     end
