@@ -1,6 +1,8 @@
 Spree::Order.class_eval do
   include ActiveSupport::Callbacks
 
+  after_update :destroy_empty_shipments!
+
   def electronic_shipments
     shipments.electronic
   end
@@ -9,42 +11,18 @@ Spree::Order.class_eval do
     shipments.physical
   end
 
-  # from spree_core
-  def create_shipment!
-    shipping_method(true)
+  def create_shipment_with_electronic_delivery!
+    create_shipment_without_electronic_delivery!
 
-    if line_items.electronically_delivered.any? && electronic_shipments.empty?
-      create_shipment_for_shipping_method! Spree::ShippingMethod.electronic
+    # re-assign electronic inventory units to an electronic shipment
+    if line_items.electronically_delivered.any?
+      electronic_shipment = shipments.electronic.first_or_create!
+      electronic_shipment.inventory_units = inventory_units.electronically_delivered
     end
 
-    if line_items.physically_delivered.any?
-      if physical_shipments.empty?
-        create_shipment_for_shipping_method! shipping_method
-      else
-        physical_shipments.each do |physical_shipment|
-          if physical_shipment.shipping_method != shipping_method
-            physical_shipment.update_attributes!(:shipping_method => shipping_method)
-          end
-        end
-      end
-    end
-
-    if line_items.electronically_delivered.empty? && electronic_shipments.any?
-      electronic_shipments.destroy_all
-    end
-
-    if line_items.physically_delivered.empty? && physical_shipments.any?
-      physical_shipments.destroy_all
-    end
-
-    if inventory_units.electronically_delivered.any?
-      electronic_shipments.first.inventory_units = inventory_units.electronically_delivered
-    end
-
-    if inventory_units.physically_delivered.any?
-      physical_shipments.first.inventory_units = inventory_units.physically_delivered
-    end
+    destroy_empty_shipments!
   end
+  alias_method_chain :create_shipment!, :electronic_delivery
 
   def after_finalize!
     electronic_shipments.each do |shipment|
@@ -53,14 +31,16 @@ Spree::Order.class_eval do
   end
 
   private
-    def create_shipment_for_shipping_method!(method)
-      self.shipments << Spree::Shipment.create!(
-        {
-          :order => self,
-          :shipping_method => method,
-          :address => self.ship_address
-        },
-        :without_protection => true
-      )
+
+  def destroy_empty_shipments!
+    # destroy any physical shipments without inventory units
+    if line_items.physically_delivered.empty? && physical_shipments.any?
+      physical_shipments.destroy_all
     end
+
+    # destroy any electronic shipments without inventory units
+    if line_items.electronically_delivered.empty? && electronic_shipments.any?
+      electronic_shipments.destroy_all
+    end
+  end
 end

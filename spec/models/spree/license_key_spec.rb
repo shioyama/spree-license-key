@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Spree::LicenseKey do
-  let(:inventory_unit) { create :spree_inventory_unit }
+  let(:inventory_unit) { create :inventory_unit }
   let!(:available_license_key) { create :license_key }
   let!(:used_license_key) { create :license_key, inventory_unit: inventory_unit }
 
