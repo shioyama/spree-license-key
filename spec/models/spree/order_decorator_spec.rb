@@ -84,4 +84,13 @@ describe Spree::Order do
     end
 
   end
+
+  describe "after update callback" do
+    let!(:shipment) { create :shipment, :order => order, :shipping_method => electronic_shipping_method }
+    it "destroys electronic shipments without corresponding electronic line items" do
+      expect {
+        order.save!
+      }.to change { order.shipments.count }.by(-1)
+    end
+  end
 end
