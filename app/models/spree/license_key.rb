@@ -11,11 +11,11 @@ module Spree
     scope :void, where(void: true)
 
     def used?
-      self.class.used.where(id: id).any?
+      inventory_unit.present?
     end
 
     def available?
-      self.class.available.where(id: id).any?
+      !void? && inventory_unit.nil?
     end
   end
 end
