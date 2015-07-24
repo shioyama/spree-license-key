@@ -7,6 +7,7 @@ module Spree
     attr_accessible :license_key, :inventory_unit_id, :variant_id, :void, :memo, :activated_on
 
     scope :available, where(inventory_unit_id: nil, void: false)
-    scope :used, where('(inventory_unit_id IS NOT NULL) OR (void = ?)', true)
+    scope :void, where(void: true)
+    scope :used, where('inventory_unit_id IS NOT NULL')
   end
 end
