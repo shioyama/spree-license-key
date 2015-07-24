@@ -16,6 +16,10 @@ Be sure to bundle your dependencies and then create a dummy test app for the spe
 
     $ bundle
     $ bundle exec rake test_app
-    $ bundle exec rspec spec
+    $ cd spec/dummy/
+    $ bundle exec rails g delayed_job:active_record
+    $ RAILS_ENV=test bundle exec rake db:migrate
+    $ cd ../..
+    $ bundle exec rspec
 
 Copyright (c) 2012 [name of extension creator], released under the New BSD License
