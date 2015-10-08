@@ -16,7 +16,7 @@ Spree::Variant.class_eval do
 
   private
   def electronic_delivery_set
-    if self.electronic_delivery_keys && self.electronic_delivery_keys > 0 && !self.electronic_delivery?
+    if electronic_delivery_keys && electronic_delivery_keys > 0 && !electronic_delivery?
       errors.add(:electronic_delivery, I18n.t('spree.variant.electronic_delivery_setting_error'))
     end
   end

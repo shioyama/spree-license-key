@@ -12,6 +12,6 @@ Spree::ShippingMethod.class_eval do
   end
 
   def self.electronic
-    self.where(:name => ELECTRONIC_DELIVERY_NAME).first!
+    where(:name => ELECTRONIC_DELIVERY_NAME).first!
   end
 end
