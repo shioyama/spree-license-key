@@ -6,8 +6,12 @@ Spree::Variant.class_eval do
 
   validate :electronic_delivery_set
 
-  def license_key_populator
+  def license_key_populator_class
     populator_type.present? ? populator_type.try(:constantize) : Spree::DefaultLicenseKeyPopulator
+  end
+
+  def license_key_populator
+    license_key_populator_class.new(self)
   end
 
   private

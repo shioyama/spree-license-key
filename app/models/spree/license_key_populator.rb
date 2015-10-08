@@ -1,9 +1,17 @@
 module Spree
   class LicenseKeyPopulator
-    def self.populate(inventory_unit, quantity)
+    attr_reader :variant
+
+    def initialize(variant)
+      @variant = variant
+    end
+
+    def license_key_types
+      variant.license_key_types.empty? ? [nil] : variant.license_key_types
+    end
+
+    def populate(inventory_unit, quantity)
       ActiveRecord::Base.transaction do
-        variant = inventory_unit.variant
-        license_key_types = variant.license_key_types.empty? ? [nil] : variant.license_key_types
         license_key_types.each do |license_key_type|
           if keys = get_available_keys(inventory_unit, quantity, license_key_type)
             success(inventory_unit, license_key_type)
@@ -17,21 +25,21 @@ module Spree
     end
 
     # Gets keys from source. Should return a relation.
-    def self.get_available_keys(inventory_unit, quantity, license_key_type=nil)
+    def get_available_keys(inventory_unit, quantity, license_key_type=nil)
       raise NotImplementedError, "Spree::LicenseKeyPopulator must implement a get_available_keys method."
     end
 
-    def self.failure(inventory_unit, license_key_type)
+    def failure(inventory_unit, license_key_type)
     end
 
-    def self.success(inventory_unit, license_key_type)
+    def success(inventory_unit, license_key_type)
     end
 
     class InsufficientLicenseKeys < ::StandardError; end
 
     private
 
-    def self.assign_keys!(keys, inventory_unit)
+    def assign_keys!(keys, inventory_unit)
       timestamp = DateTime.now
       keys.each { |key| key.update_attributes!(inventory_unit_id: inventory_unit.id, activated_on: timestamp) }
     end
