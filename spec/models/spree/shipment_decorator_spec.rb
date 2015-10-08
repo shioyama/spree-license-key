@@ -33,13 +33,13 @@ describe Spree::Shipment do
     end
 
     it 'allocates the next license key to the inventory unit' do
-      Spree::DefaultLicenseKeyPopulator.should_receive(:populate).once.with(inventory_unit, 1)
+      expect_any_instance_of(Spree::DefaultLicenseKeyPopulator).to receive(:populate).once.with(inventory_unit, 1)
       shipment.electronic_delivery!
     end
 
     shared_examples_for "inventory unit with no electronic delivery keys" do
       it "does not assign any license keys" do
-        Spree::DefaultLicenseKeyPopulator.should_not_receive(:populate)
+        expect_any_instance_of(Spree::DefaultLicenseKeyPopulator).not_to receive(:populate)
         shipment.electronic_delivery!
       end
     end
@@ -58,7 +58,7 @@ describe Spree::Shipment do
       let(:number_of_keys_in_package) { 2 }
 
       it 'allocates keys to match the number of keys in the package' do
-        Spree::DefaultLicenseKeyPopulator.should_receive(:populate).once.with(inventory_unit, 2)
+        Spree::DefaultLicenseKeyPopulator.any_instance.should_receive(:populate).once.with(inventory_unit, 2)
         shipment.electronic_delivery!
       end
     end
@@ -108,7 +108,7 @@ describe Spree::Shipment do
         before { shipment.inventory_units << inventory_unit }
 
         it "sends an e-mail shipment mailer" do
-          Spree::EmailDeliveryMailer.any_instance.should_receive(:electronic_delivery_email).once
+          expect_any_instance_of(Spree::EmailDeliveryMailer).to receive(:electronic_delivery_email).once
           shipment.send_shipped_email
         end
 
@@ -119,7 +119,7 @@ describe Spree::Shipment do
       let(:electronic) { false }
 
       it "sends a physical shipment mailer" do
-        Spree::ShipmentMailer.any_instance.should_receive(:shipped_email).once
+        expect_any_instance_of(Spree::ShipmentMailer).to receive(:shipped_email).once
         shipment.send_shipped_email
       end
     end

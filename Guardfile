@@ -8,7 +8,7 @@ notification :tmux,
   :line_separator => ' > ', # since we are single line we need a separator
   :color_location => 'status-left-bg' # to customize which tmux element will change color'
 
-guard 'rspec' do
+guard 'rspec', cmd: "bundle exec rspec" do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^lib/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
   watch('spec/spec_helper.rb')  { "spec" }

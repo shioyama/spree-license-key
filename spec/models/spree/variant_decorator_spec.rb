@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+class MyPopulator < Spree::LicenseKeyPopulator; end
+
 describe Spree::Variant do
   let(:variant) { build :variant }
 
@@ -30,17 +32,20 @@ describe Spree::Variant do
 
     context 'when populator type is blank' do
       before { variant.populator_type = '' }
-      it { should == Spree::DefaultLicenseKeyPopulator }
+      it { should be_a(Spree::DefaultLicenseKeyPopulator) }
+      its(:variant) { should == variant }
     end
 
     context 'when populator type is nil' do
       before { variant.populator_type = nil }
-      it { should == Spree::DefaultLicenseKeyPopulator }
+      it { should be_a(Spree::DefaultLicenseKeyPopulator) }
+      its(:variant) { should == variant }
     end
 
     context 'when populator type is another class' do
-      before { variant.populator_type = 'Spree' }
-      it { should == Spree }
+      before { variant.populator_type = 'MyPopulator' }
+      it { should be_a(MyPopulator) }
+      its(:variant) { should == variant }
     end
   end
 end

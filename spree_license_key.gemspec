@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'ffaker'
   s.add_development_dependency 'rspec-rails',  '~> 2.9'
   if ENV['DB'] == 'mysql'
-    s.add_development_dependency 'mysql2'
+    s.add_development_dependency 'mysql2', '~> 0.3.10'
   else
     s.add_development_dependency 'sqlite3'
   end
