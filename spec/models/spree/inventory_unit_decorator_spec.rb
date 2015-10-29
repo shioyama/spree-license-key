@@ -47,8 +47,7 @@ describe Spree::InventoryUnit do
 
       context "when calls couple times" do
         it "creates related elctronic shipment couple inventory units" do
-          Spree::InventoryUnit.increase(order, electronic_variant, 1)
-          Spree::InventoryUnit.increase(order, electronic_variant, 1)
+          2.times { Spree::InventoryUnit.increase(order, electronic_variant, 1) }
 
           expect(order.shipments.electronic.first.inventory_units.count).to be(2)
         end
