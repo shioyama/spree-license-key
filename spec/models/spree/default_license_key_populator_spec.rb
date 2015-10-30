@@ -6,7 +6,7 @@ describe Spree::DefaultLicenseKeyPopulator do
   let(:quantity) { 2 }
   let(:populator) { described_class.new(variant) }
 
-  describe '.get_available_keys' do
+  describe '#get_available_keys' do
     shared_examples_for "license key populator" do
       context "no keys available" do
         it "returns false" do
@@ -57,6 +57,36 @@ describe Spree::DefaultLicenseKeyPopulator do
     let(:variant) { build_stubbed :variant }
     it "raises error for insufficient keys if none are available" do
       expect { populator.populate(inventory_unit, quantity + 1) }.to raise_error(Spree::LicenseKeyPopulator::InsufficientLicenseKeys)
+    end
+  end
+
+  describe '#on_hand' do
+    let(:variant) { create :variant }
+    let!(:license_keys) do
+    end
+
+    context "nil license key type" do
+      before do
+        quantity.times.map { create(:license_key, variant: variant, license_key_type: nil) }
+      end
+
+      it "returns number of remaining keys" do
+        expect(populator.on_hand).to eq(2)
+      end
+    end
+
+    context "license key types defined" do
+      let(:license_key_type) { create(:license_key_type) }
+      before do
+        license_key_type_1 = create(:license_key_type, variants: [variant])
+        create(:license_key, variant: variant, license_key_type: license_key_type_1)
+        license_key_type_2 = create(:license_key_type, variants: [variant])
+        2.times { create(:license_key, variant: variant, license_key_type: license_key_type_2) }
+      end
+
+      it "returns minimum number of remaining keys across all types" do
+        expect(populator.on_hand).to eq(1)
+      end
     end
   end
 end
