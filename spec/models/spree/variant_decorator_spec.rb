@@ -48,4 +48,30 @@ describe Spree::Variant do
       its(:variant) { should == variant }
     end
   end
+
+  describe 'on_hand' do
+    let(:variant) do
+      build_stubbed :variant, on_hand: 5, electronic_delivery: electronic_delivery
+    end
+
+    context 'physical delivery' do
+      let(:electronic_delivery) { false }
+      it 'returns number on hand' do
+        expect(variant.on_hand).to eq(5)
+      end
+    end
+
+    context 'electronic delivery' do
+      let(:electronic_delivery) { true }
+      before do
+        variant.stub(:license_key_populator) do
+          double("license key populator", on_hand: 10)
+        end
+      end
+
+      it 'returns number on hand according to populator' do
+        expect(variant.on_hand).to eq(10)
+      end
+    end
+  end
 end
