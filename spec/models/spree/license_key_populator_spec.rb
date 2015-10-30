@@ -98,5 +98,11 @@ describe Spree::LicenseKeyPopulator do
         end
       end
     end
+
+    describe '#on_hand' do
+      it 'returns true' do
+        expect(license_key_populator.on_hand).to eq(true)
+      end
+    end
   end
 end
