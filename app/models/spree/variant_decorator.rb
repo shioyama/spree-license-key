@@ -14,6 +14,15 @@ Spree::Variant.class_eval do
     license_key_populator_class.new(self)
   end
 
+  def on_hand_with_electronic_delivery
+    if electronic_delivery?
+      license_key_populator.on_hand
+    else
+      on_hand_without_electronic_delivery
+    end
+  end
+  alias_method_chain :on_hand, :electronic_delivery
+
   private
   def electronic_delivery_set
     if electronic_delivery_keys && electronic_delivery_keys > 0 && !electronic_delivery?

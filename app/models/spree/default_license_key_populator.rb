@@ -14,6 +14,10 @@ module Spree
             "Variant: #{inventory_unit.variant.to_param}, License Key Type: #{license_key_type.try(:id)}")
     end
 
+    def on_hand
+      license_key_types.map { |type| count_available(type) }.min
+    end
+
     private
 
     def count_available(license_key_type)
