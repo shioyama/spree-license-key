@@ -35,9 +35,8 @@ module Spree
     def success(inventory_unit, license_key_type)
     end
 
-    # default to true
     def on_hand
-      true
+      raise NotImplementedError, "Spree::LicenseKeyPopulator must implement an on_hand method."
     end
 
     class InsufficientLicenseKeys < ::StandardError; end

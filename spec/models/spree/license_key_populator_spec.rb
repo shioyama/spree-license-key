@@ -100,8 +100,11 @@ describe Spree::LicenseKeyPopulator do
     end
 
     describe '#on_hand' do
-      it 'returns true' do
-        expect(license_key_populator.on_hand).to eq(true)
+      it "raises NotImplementedError" do
+        populator = Spree::LicenseKeyPopulator.new(variant)
+        expect {
+          populator.on_hand
+        }.to raise_error(NotImplementedError)
       end
     end
   end
