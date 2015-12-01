@@ -100,11 +100,9 @@ describe Spree::LicenseKeyPopulator do
     end
 
     describe '#on_hand' do
-      it "raises NotImplementedError" do
+      it "returns infinity" do
         populator = Spree::LicenseKeyPopulator.new(variant)
-        expect {
-          populator.on_hand
-        }.to raise_error(NotImplementedError)
+        expect(populator.on_hand).to eq(Float::INFINITY)
       end
     end
   end

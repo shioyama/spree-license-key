@@ -36,7 +36,7 @@ module Spree
     end
 
     def on_hand
-      raise NotImplementedError, "Spree::LicenseKeyPopulator must implement an on_hand method."
+      Float::INFINITY
     end
 
     class InsufficientLicenseKeys < ::StandardError; end
