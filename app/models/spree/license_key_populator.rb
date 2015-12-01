@@ -35,9 +35,8 @@ module Spree
     def success(inventory_unit, license_key_type)
     end
 
-    # default to true
     def on_hand
-      true
+      Float::INFINITY
     end
 
     class InsufficientLicenseKeys < ::StandardError; end
