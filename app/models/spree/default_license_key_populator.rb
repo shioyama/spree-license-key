@@ -15,6 +15,7 @@ module Spree
     end
 
     def on_hand
+      return Float::INFINITY unless variant.electronic_delivery_keys.to_i > 0
       license_key_types.map { |type| count_available(type) }.min
     end
 
