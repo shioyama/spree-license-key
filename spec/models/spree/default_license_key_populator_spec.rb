@@ -61,8 +61,15 @@ describe Spree::DefaultLicenseKeyPopulator do
   end
 
   describe '#on_hand' do
-    let(:variant) { create :variant }
-    let!(:license_keys) do
+    let(:electronic_delivery_keys) { 1 }
+    let(:variant) { create :variant, electronic_delivery_keys: electronic_delivery_keys, electronic_delivery: true }
+
+    context "no keys on variant" do
+      let(:electronic_delivery_keys) { 0 }
+
+      it "returns infinity" do
+        expect(populator.on_hand).to eq(Float::INFINITY)
+      end
     end
 
     context "nil license key type" do
