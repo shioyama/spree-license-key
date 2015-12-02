@@ -12,7 +12,5 @@ env:
 rvm:
 - 2.1.7
 notifications:
-  hipchat:
-    rooms:
-      secure: DHLoTFsbeJd5vgos1k85hGOiJ1+DL2T6SYvWlxvxhMr6beDh4FNO/kwBwyIIUIsNuzYBtZTAq2qi3dgrXBCF5WpOqHK9FNow0YWuhO/4QwnuSeMwf8SmyJzXYg0GQo+tc5pDWgqABeXtv3H1NBZkKIYkYdH9/PfO8yMvieZSSNg=
-  slack: degica:5qSWYJuIKSySc5KqlxwIoNRd
+  slack:
+    secure: ej46oUhTtuInX0eQ885Wnp8tnZ4FaBiJXgCnhITRB5oSUmEAmgfKIrcSW+jznlPqDgTz4qXgdZtXD9cZXkXlGdLuymj7gxgfZrO1M6lwNjxTGc5YPI1a40nAoNft+uqkUtnQYQzKJNnIOM2hAghUKdI2Gb3WCRtCI3nlEzURINE=
